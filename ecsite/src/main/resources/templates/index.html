@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>ECサイト</title>
+<link href="/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+<script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet"
+      href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="/js/common.js" th:src="@{/js/common.js}"></script>
+<script>
+let cartList=[];
+$(()=>{
+	$('#loginForm').on('submit',login);
+	$('.cartBtn').on('click',addCart);
+	$('#buyBtn').on('click',buy);
+	$("#historyBtn").on('click',showHistory);
+//	$("#history").dialog({
+//		autoOpen:false,
+//		width:550,
+//		modal:true,
+//		buttons:[
+//			{
+//				text:'OK',
+//				click:function(){
+//					$(this).dialog("close");
+//				}
+//			},
+//		]
+//	});
+	$("#history").dialog({
+		autoOpen:false,
+		width:550,
+		modal:true,
+		buttons:[
+		  {
+			text:'OK',
+			click:function(){
+				$(this).dialog("close");
+				}
+		  },
+		]
+	});
+});
+</script>
+<!--ログイン機能
+let cartListは追加されたカート情報を一覧形式でメモリ上に保持しておく変数を定義
+最初の外側のかっこ　Ecmascript2015以降のアロー関数(ラムダ式)で記述
+意味は$function(){};と同じでページオンロード時のイベントリスナ
+中身はloginFormのidを持つ要素で、
+submitイベントが発生した際にloginを呼び出すようリスナー登録
+関数はjqueryのajaxを呼び出し、
+Indexcontrollerに追加したloginメソッドにアクセス
+その後thenメソッドのコールバック関数により、参照した結果を画面に出力-->
+
+</head>
+<body>
+<header>
+	<h1>My EC Site</h1>
+	<div>
+		<form name="loginForm" id="loginForm" method="post" action="#">
+			User name:<input type="text" name="userName"/>
+			Password:<input type="password" name="password"/>
+			<button type="submit">Login</button>
+		</form>
+		<br/>
+		<span id="welcome">-- ようこそ！ゲストさん</span>
+		<input type="hidden" id="hiddenUserId" value="0"/>
+	</div>
+</header>
+
+<table>
+	<thead>
+		<tr>
+			<th>ID</th><th>商品名</th><th>価格</th><th>注文数</th><th>カート</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr th:each="item:${goods}">
+			<td th:text="${item.id}"/>
+			<td th:text="${item.goodsName}"/>
+			<td th:text="${item.price}"/>
+			<td><input type="number" class="count" value="0"/></td>
+			<td><button class="cartBtn">カートに入れる</button></td>
+		</tr>
+		<!--Thymeleafを使用したループ処理
+		ControllerでMpdelオブジェクトに追加されたキーで取得した値(今回Listコレクション)をループ-->
+	</tbody>
+</table>
+
+<fieldset>
+	<legend>カート</legend>
+	<table id="cart">
+		<thead>
+			<tr>
+				<th>ID</th><th>商品名</th><th>価格</th><th>注文数</th><th>カート</th>
+			</tr>
+		</thead>
+		<tbody>
+		<!--ajaxのREST手法で動的にテーブル作成予定-->
+		</tbody>
+	</table>
+	<button id="buyBtn">購入</button>
+	<button id="historyBtn">履歴</button>
+</fieldset>
+
+<div id="history" title="購入履歴" style="display: none;">
+	<table id="historyTable">
+		<thead>
+			<tr>
+				<th>商品名</th><th>注文数</th><th>購入日時</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+<!--初期表示時に非表示となるようスタイル定義
+履歴ボタンを押すと表示するよう後で作成-->
+
+</body>
+</html>
